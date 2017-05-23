@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        // "module": "commonjs",
+        "target": "es2015",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+		"outFile": "spritzlib.js"
+    },
+    "files": [
+       "util.ts",
+	   "spritz.ts",
+	   "hash.ts"
+    ]
+}
