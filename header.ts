@@ -30,7 +30,7 @@ namespace Spritz {
 
         private static keyGen(pwBytes: Uint8Array, iv: Uint8Array): Uint8Array {
             var keyBytes = new Uint8Array(64);
-            hashArray(keyBytes, pwBytes);
+            Hash.ofArray(keyBytes, pwBytes);
 
             var spritz = new Cipher();
             var iv2 = Uint8Array.from(iv);
@@ -77,14 +77,14 @@ namespace Spritz {
 
             // generate a hash of the pw, to mask the IV...
             var maskedIV = new Uint8Array(4);
-            hashArray(maskedIV, pwBytes);
+            Hash.ofArray(maskedIV, pwBytes);
             Header.combineFour(maskedIV, this.iv);
 
             // generate a random token, and its hash...
             var checkToken = new Uint8Array(4);
             Util.randFill(checkToken);
             var checkHash = new Uint8Array(4);
-            hashArray(checkHash, checkToken);
+            Hash.ofArray(checkHash, checkToken);
 
             var toSkip = checkToken[3]; // random skip amount...
 
@@ -115,7 +115,7 @@ namespace Spritz {
             this.iv = new Uint8Array(b.subarray(0, 4));
             var pwBytes = Util.encodeUTF8(pw);
             var ivMask = new Uint8Array(4);
-            hashArray(ivMask, pwBytes);
+            Hash.ofArray(ivMask, pwBytes);
             Header.combineFour(this.iv, ivMask);
 
             // set up the cipher to decrypt the header
@@ -128,7 +128,7 @@ namespace Spritz {
 
             // check the token...	
             var hashedToken = new Uint8Array(4);
-            hashArray(hashedToken, token);
+            Hash.ofArray(hashedToken, token);
             if (!hashedToken.every(function (hti, i) { return hti == token[i] })) {
                 throw "bad password or corrupted stream";
             }

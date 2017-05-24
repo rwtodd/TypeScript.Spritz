@@ -6,8 +6,8 @@
 	function doHash() {
 		var toHash = document.getElementById("src").value;
 		var target = new Uint8Array(32);
-		Spritz.hashString(target, toHash);
-		document.getElementById("tgt").innerText = Util.b64Array(target);
+		Spritz.Hash.ofString(target, toHash);
+		document.getElementById("tgt").innerText = Spritz.Util.b64Array(target);
 	}
 </script>	
 </head>
