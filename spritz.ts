@@ -21,20 +21,20 @@ namespace Spritz {
 			this.a = 0
 			this.w = 1
 			this.mem = new Uint8Array(256)
-			for (var idx: number = 0; idx < 256; idx++) {
+			for (let idx: number = 0; idx < 256; idx++) {
 				this.mem[idx] = idx
 			}
 		}
 
 		// swap two values.
 		private memSwap(idx1: number, idx2: number) {
-			var tmp = this.mem[idx1]
+			let tmp = this.mem[idx1]
 			this.mem[idx1] = this.mem[idx2]
 			this.mem[idx2] = tmp
 		}
 
 		private crush() {
-			for (var v: number = 0; v < 128; v++) {
+			for (let v: number = 0; v < 128; v++) {
 				if (this.mem[v] > this.mem[255 - v]) {
 					this.memSwap(v, 255 - v);
 				}
@@ -96,7 +96,7 @@ namespace Spritz {
 
 		soak(src: Iterable<number>) : void;
 		soak(src: Uint8Array) : void {
-			for (var b of src) {
+			for (let b of src) {
 				this.absorb(b)
 			}
 		}
@@ -117,14 +117,14 @@ namespace Spritz {
 
 		squeeze(tgt: Uint8Array) {
 			if (this.a > 0) { this.shuffle(); }
-			for (var v: number = 0; v < tgt.length; ++v) {
+			for (let v: number = 0; v < tgt.length; ++v) {
 				tgt[v] = this.drip();
 			}
 		}
 
 		squeezeXOR(tgt: Uint8Array) {
 			if (this.a > 0) { this.shuffle(); }
-			for (var v: number = 0; v < tgt.length; ++v) {
+			for (let v: number = 0; v < tgt.length; ++v) {
 				tgt[v] ^= this.drip();
 			}
 		}

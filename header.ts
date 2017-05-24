@@ -14,7 +14,7 @@ namespace Spritz {
         key: Uint8Array;
 
         makeCipher(): Cipher {
-            var c = new Cipher();
+            let c = new Cipher();
             c.soak(this.key);
             c.skip(2048 + this.key[3]);
             return c;
@@ -29,14 +29,14 @@ namespace Spritz {
         }
 
         private static keyGen(pwBytes: Uint8Array, iv: Uint8Array): Uint8Array {
-            var keyBytes = new Uint8Array(64);
+            let keyBytes = new Uint8Array(64);
             Hash.ofArray(keyBytes, pwBytes);
 
-            var spritz = new Cipher();
-            var iv2 = Uint8Array.from(iv);
+            let spritz = new Cipher();
+            let iv2 = Uint8Array.from(iv);
 
-            var iterations: number = 20000 + iv[3];
-            for (var i: number = 0; i < iterations; ++i) {
+            let iterations: number = 20000 + iv[3];
+            for (let i: number = 0; i < iterations; ++i) {
                 spritz.reset();
                 spritz.soak(iv2);
                 spritz.absorbStop();
@@ -58,7 +58,7 @@ namespace Spritz {
 
         /// <summary>Write the header to a freshly-allocated byte array</summary>
         generate(pw: string): Uint8Array {
-            var result = new Uint8Array(76);
+            let result = new Uint8Array(76);
 
             if (this.iv == null) {
                 this.iv = new Uint8Array(4);
@@ -71,22 +71,22 @@ namespace Spritz {
             }
 
             // set up the cipher
-            var pwBytes = Util.encodeUTF8(pw);
-            var headerCipher = new Cipher();
+            let pwBytes = Util.encodeUTF8(pw);
+            let headerCipher = new Cipher();
             headerCipher.soak(Header.keyGen(pwBytes, this.iv));
 
             // generate a hash of the pw, to mask the IV...
-            var maskedIV = new Uint8Array(4);
+            let maskedIV = new Uint8Array(4);
             Hash.ofArray(maskedIV, pwBytes);
             Header.combineFour(maskedIV, this.iv);
 
             // generate a random token, and its hash...
-            var checkToken = new Uint8Array(4);
+            let checkToken = new Uint8Array(4);
             Util.randFill(checkToken);
-            var checkHash = new Uint8Array(4);
+            let checkHash = new Uint8Array(4);
             Hash.ofArray(checkHash, checkToken);
 
-            var toSkip = checkToken[3]; // random skip amount...
+            let toSkip = checkToken[3]; // random skip amount...
 
             // encrypt the token and hash...
             headerCipher.squeezeXOR(checkToken);
@@ -94,7 +94,7 @@ namespace Spritz {
             headerCipher.squeezeXOR(checkHash);
 
             // encrypt the key...
-            var copiedKey = Uint8Array.from(this.key);
+            let copiedKey = Uint8Array.from(this.key);
             headerCipher.squeezeXOR(copiedKey);
 
             // ok, now write everything out...
@@ -113,15 +113,15 @@ namespace Spritz {
 
             // get the IV..
             this.iv = new Uint8Array(b.subarray(0, 4));
-            var pwBytes = Util.encodeUTF8(pw);
-            var ivMask = new Uint8Array(4);
+            let pwBytes = Util.encodeUTF8(pw);
+            let ivMask = new Uint8Array(4);
             Hash.ofArray(ivMask, pwBytes);
             Header.combineFour(this.iv, ivMask);
 
             // set up the cipher to decrypt the header
-            var headerCipher = new Cipher();
+            let headerCipher = new Cipher();
             headerCipher.soak(Header.keyGen(pwBytes, this.iv));
-            var token = b.subarray(4, 8);
+            let token = b.subarray(4, 8);
             headerCipher.squeezeXOR(token);
             headerCipher.skip(b[7]);
             headerCipher.squeezeXOR(b.subarray(8, 76));
