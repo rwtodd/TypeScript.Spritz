@@ -12,6 +12,7 @@
        "util.ts",
 	   "spritz.ts",
 	   "hash.ts",
-       "header.ts"
+       "header.ts",
+       "crypt.ts"
     ]
 }

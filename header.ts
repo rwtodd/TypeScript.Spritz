@@ -5,7 +5,7 @@ namespace Spritz {
 
     export class Header {
         // helpful constant
-        readonly length: number = 72;
+        readonly length: number = 76;
 
         // this is the initialization vector
         iv: Uint8Array;
@@ -107,8 +107,8 @@ namespace Spritz {
         }
 
         parse(pw: string, b: Uint8Array): void {
-            if (b.length != 76) {
-                throw "header must be 76 bytes long";
+            if (b.length != this.length) {
+                throw "header is the wrong size";
             }
 
             // get the IV..
@@ -127,9 +127,10 @@ namespace Spritz {
             headerCipher.squeezeXOR(b.subarray(8, 76));
 
             // check the token...	
-            var hashedToken = new Uint8Array(4);
+            let hashedToken = new Uint8Array(4);
             Hash.ofArray(hashedToken, token);
-            if (!hashedToken.every(function (hti, i) { return hti == token[i] })) {
+            let srcToken = b.subarray(8,12); 
+            if (!hashedToken.every(function (hti, i) { return hti == srcToken[i] })) {
                 throw "bad password or corrupted stream";
             }
 
